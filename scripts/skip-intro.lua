@@ -3,7 +3,7 @@ NORMAL_SPEED = 1
 ONE_SECOND = 1
 skip = false
 -- Max noise (dB) and min silence duration (s) to trigger
-opts = { quietness = -35, duration = 1 }
+opts = { quietness = -45, duration = 0.4 }
 
 
 function setOptions()
