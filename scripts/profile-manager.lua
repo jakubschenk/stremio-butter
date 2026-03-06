@@ -609,16 +609,7 @@ function try_execute_profile()
     local base_profile = is_anime and "anime-sdr" or "sdr"
     
     -- Build OSD message
-    local osd_parts = {}
-    if is_anime then
-        table.insert(osd_parts, "Anime")
-        if is_legacy_anime then table.insert(osd_parts, "Legacy") end
-    else
-        table.insert(osd_parts, "Cinema")
-    end
-    if is_hdr then
-        table.insert(osd_parts, hdr_passthrough and "HDR" or "HDR→SDR")
-    end
+   
     
     -- APPLY
     log("--- FINAL DECISION ---")
