@@ -655,6 +655,15 @@ class EnhancedPlayer {
     });
   }
 
+  /** Converts "1x05" / "2x12" to "S01E05" / "S02E12" */
+  formatSXXEXX(seasonEpisode) {
+    const m = String(seasonEpisode).match(/^(\d+)x(\d+)$/i);
+    if (!m) return seasonEpisode;
+    const s = m[1].padStart(2, "0");
+    const e = m[2].padStart(2, "0");
+    return `S${s}E${e}`;
+  }
+
   moveTitles() {
     const titleSelectors = [
       ".meta-info-container > [class*='name']:not(.enhanced-cast-name):not(.enhanced-cast-character)",
@@ -733,12 +742,41 @@ class EnhancedPlayer {
       return;
     }
 
-    if (
-      targetContainer.querySelector(".custom-series-name") ||
-      targetContainer.querySelector(".custom-movie-title")
-    ) {
-      return;
-    }
+    const existingSeries = targetContainer.querySelector(".custom-series-name");
+    const existingEpisode = targetContainer.querySelector(".custom-episode-title");
+
+    const applyOrUpdate = (seriesText, episodeText) => {
+      if (existingSeries && existingEpisode) {
+        if (existingSeries.textContent === seriesText && existingEpisode.textContent === episodeText) return;
+        existingSeries.textContent = seriesText;
+        existingEpisode.textContent = episodeText;
+      } else {
+        targetContainer.querySelectorAll(".custom-series-name, .custom-episode-title").forEach((el) => el.remove());
+        const seriesDiv = document.createElement("div");
+        seriesDiv.className = "custom-series-name";
+        seriesDiv.textContent = seriesText;
+        const episodeDiv = document.createElement("div");
+        episodeDiv.className = "custom-episode-title";
+        episodeDiv.textContent = episodeText;
+        targetContainer.insertBefore(seriesDiv, targetContainer.firstChild);
+        targetContainer.insertBefore(episodeDiv, seriesDiv.nextSibling);
+      }
+      if (titleElement) titleElement.style.display = "none";
+    };
+
+    const applyOrUpdateMovie = (text) => {
+      if (existingSeries && !existingEpisode) {
+        if (existingSeries.textContent === text) return;
+        existingSeries.textContent = text;
+      } else {
+        targetContainer.querySelectorAll(".custom-series-name, .custom-episode-title").forEach((el) => el.remove());
+        const movieDiv = document.createElement("div");
+        movieDiv.className = "custom-series-name";
+        movieDiv.textContent = text;
+        targetContainer.insertBefore(movieDiv, targetContainer.firstChild);
+      }
+      if (titleElement) titleElement.style.display = "none";
+    };
 
     let match = titleText.match(/^(.+?): (.+?) - (.+?) \((\d+x\d+)\)$/);
 
@@ -746,19 +784,7 @@ class EnhancedPlayer {
       match = titleText.match(/^(.+?) - (.+?) \((\d+x\d+)\)$/);
       if (match) {
         const [, seriesName, episodeTitle, seasonEpisode] = match;
-
-        const seriesDiv = document.createElement("div");
-        seriesDiv.className = "custom-series-name";
-        seriesDiv.textContent = seriesName;
-
-        const episodeDiv = document.createElement("div");
-        episodeDiv.className = "custom-episode-title";
-        episodeDiv.textContent = `${episodeTitle} (${seasonEpisode})`;
-
-        targetContainer.insertBefore(seriesDiv, targetContainer.firstChild);
-        targetContainer.insertBefore(episodeDiv, seriesDiv.nextSibling);
-
-        if (titleElement) titleElement.style.display = "none";
+        applyOrUpdate(seriesName, `${episodeTitle} ${this.formatSXXEXX(seasonEpisode)}`);
         return;
       }
     }
@@ -767,48 +793,20 @@ class EnhancedPlayer {
       match = titleText.match(/^(.+?) \((\d+x\d+)\) (.+?)$/);
       if (match) {
         const [, seriesName, seasonEpisode, episodeTitle] = match;
-
-        const seriesDiv = document.createElement("div");
-        seriesDiv.className = "custom-series-name";
-        seriesDiv.textContent = seriesName;
-
-        const episodeDiv = document.createElement("div");
-        episodeDiv.className = "custom-episode-title";
-        episodeDiv.textContent = `${episodeTitle} (${seasonEpisode})`;
-
-        targetContainer.insertBefore(seriesDiv, targetContainer.firstChild);
-        targetContainer.insertBefore(episodeDiv, seriesDiv.nextSibling);
-
-        if (titleElement) titleElement.style.display = "none";
+        applyOrUpdate(seriesName, `${episodeTitle} ${this.formatSXXEXX(seasonEpisode)}`);
         return;
       }
     }
 
     if (match && match.length === 5) {
       const [, seriesName, episodeTitle, description, seasonEpisode] = match;
-
-      const seriesDiv = document.createElement("div");
-      seriesDiv.className = "custom-series-name";
-      seriesDiv.textContent = `${description} (${seasonEpisode})`;
-
-      const episodeDiv = document.createElement("div");
-      episodeDiv.className = "custom-episode-title";
-      episodeDiv.textContent = `${seriesName}: ${episodeTitle}`;
-
-      targetContainer.insertBefore(seriesDiv, targetContainer.firstChild);
-      targetContainer.insertBefore(episodeDiv, seriesDiv.nextSibling);
-
-      if (titleElement) titleElement.style.display = "none";
+      const sxxexx = this.formatSXXEXX(seasonEpisode);
+      applyOrUpdate(`${description} ${sxxexx}`, `${seriesName}: ${episodeTitle}`);
       return;
     }
 
     if (titleText && titleText.length > 0) {
-      const movieDiv = document.createElement("div");
-      movieDiv.className = "custom-series-name";
-      movieDiv.textContent = titleText;
-
-      targetContainer.insertBefore(movieDiv, targetContainer.firstChild);
-      if (titleElement) titleElement.style.display = "none";
+      applyOrUpdateMovie(titleText);
     }
   }
 
@@ -865,4 +863,6 @@ class EnhancedPlayer {
   }
 }
 
-new EnhancedPlayer();
+const enhancedPlayer = new EnhancedPlayer();
+
+window.enhancedPlayerInstance = enhancedPlayer;

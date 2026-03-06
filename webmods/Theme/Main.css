@@ -9,25 +9,24 @@
 
 /* GLOBAL =================================================================================== */
 
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap");
 
 :root {
-    --primary-accent-color: #fff;
-    --backdrop-filter: blur(10px) saturate(180%);  
-    --box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2), 0 4px 16px rgba(0, 0, 0, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.15), inset 0 -1px 0 rgba(0, 0, 0, 0.1);
-    --accent: color-mix(in srgb, var(--primary-accent-color), transparent 60%);
-    --shadow: drop-shadow(2px 4px 6px black);
-    --outer-glow-color: color-mix(in srgb, var(--primary-accent-color), white 20%);
+  --primary-accent-color: #fff;
+  --backdrop-filter: blur(10px) saturate(180%);
+  --box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.2), 0 4px 16px rgba(0, 0, 0, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.15), inset 0 -1px 0 rgba(0, 0, 0, 0.1);
+  --accent: color-mix(in srgb, var(--primary-accent-color), transparent 60%);
+  --shadow: drop-shadow(2px 4px 6px black);
+  --outer-glow-color: color-mix(
+    in srgb,
+    var(--primary-accent-color),
+    white 20%
+  );
 }
-
-
 
 /* Override global font and background globally */
 html {
-    font-family: 'Montserrat', sans-serif !important;
+  font-family: "Montserrat", sans-serif !important;
 }
-
-
-
-.
-
