@@ -21,7 +21,7 @@ function fixAllNavbars() {
     const htmlElement = document.querySelector('html');
 
     htmlElement.oncontextmenu = (e) => {
-        //e.preventDefault();
+        e.preventDefault();
     };
 
     verticalNavbars.forEach(vNav => {

@@ -262,8 +262,7 @@ html body {
   border: 1px solid rgba(255, 255, 255, 0.2) !important;
   opacity: 1 !important;
   overflow: hidden !important;
-  display: flex !important
-;
+  display: flex !important;
   align-items: center !important;
   justify-content: center !important;
   transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important;
@@ -276,6 +275,20 @@ html body {
 .horizontal-nav-bar-container-Y_zvK .search-bar-h60ja.expanded {
   width: 300px !important; /* Expanded width */
   justify-content: space-between !important;
+}
+
+.player-container-wIELK
+  .layer-qalDW.nav-bar-layer-r9HT5.horizontal-nav-bar-container-Y_zvK {
+  left: 0 !important;
+}
+
+.player-container-wIELK .layer-qalDW.video-container-v9_vA {
+  width: 100vw !important;
+}
+
+.player-container-wIELK
+  .layer-qalDW.buffering-layer-ZZCYp.buffering-loader-container-P7S0m {
+  width: 100vw !important;
 }
 
 /* Hide input when collapsed in horizontal nav */
@@ -478,6 +491,21 @@ html body {
   display: none !important;
 }
 
+.player-container-wIELK {
+  width: 100vw;
+  height: 100vh;
+  position: relative;
+  bottom: 0;
+  left: 0;
+  z-index: 1000;
+}
+
+.player-container-wIELK .layer-qalDW {
+  right: 0 !important;
+  position: fixed !important;
+  left: initial !important;
+}
+
 .player-container-wIELK .layer-qalDW.menu-layer-HZFG9 {
   background: rgba(70, 70, 70, 0.44) !important;
   border-radius: 50px !important;
@@ -494,6 +522,10 @@ html body {
 .next-video-popup-container-H4wnL .button-container-i4F7t.play-button-Dluk6 {
   background: none !important;
   outline: none !important;
+}
+
+.player-container-wIELK .layer-qalDW.control-bar-layer-m2jto {
+  width: 100vw !important;
 }
 
 .next-video-popup-container-H4wnL
@@ -1261,6 +1293,11 @@ side-drawer-r9EuA
   height: 2.3rem !important;
 }
 
+/* Reflow ping: toggled by JS after episode switch to fix control bar offset (no visual change) */
+.liquid-glass-control-bar-reflow {
+  contain: layout !important;
+}
+
 .control-bar-container-xsWA7
   .control-bar-buttons-container-SWhkU
   .control-bar-button-FQUsj {
@@ -1310,8 +1347,8 @@ side-drawer-r9EuA
 
 .player-container-wIELK .layer-qalDW.side-drawer-button-layer-RrB8k {
   left: initial;
-  position: fixed;
-  right: -4rem;
+  position: fixed !important;
+  right: -4rem !important;
   top: 50%;
   transform: translateY(-50%);
   background: rgba(70, 70, 70, 0.44) !important;

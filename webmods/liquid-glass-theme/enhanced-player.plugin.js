@@ -655,6 +655,42 @@ class EnhancedPlayer {
     });
   }
 
+  /**
+   * Force control bar layout recalculation after episode/title change.
+   * Retoggles absolute positioning on the control bar layer and the overlay wrapper so layout is recalculated.
+   */
+  forceControlBarReflow(container) {
+    if (!container) return;
+    const elementsToRetoggle = [container];
+    const parent = container.parentElement;
+    if (parent) {
+      const pos = getComputedStyle(parent).position;
+      if (pos === "absolute" || pos === "fixed") elementsToRetoggle.push(parent);
+    }
+    // Overlay div inside video container with inline position:absolute; left/right/bottom (centers bottom bar)
+    const playerRoot = container.closest("[class*='player-container']");
+    if (playerRoot) {
+      const videoWrap = playerRoot.querySelector("[class*='video-tkpQm'], [class*='video-container']");
+      const overlay = videoWrap
+        ? Array.from(videoWrap.querySelectorAll("div")).find(
+            (d) => d.style && (d.style.position === "absolute" || (d.getAttribute("style") || "").includes("absolute"))
+          )
+        : null;
+      if (overlay && !elementsToRetoggle.includes(overlay)) {
+        elementsToRetoggle.push(overlay);
+      }
+    }
+    elementsToRetoggle.forEach((el) => {
+      el.style.position = "relative";
+    });
+    void container.offsetHeight;
+    requestAnimationFrame(() => {
+      elementsToRetoggle.forEach((el) => {
+        el.style.position = "";
+      });
+    });
+  }
+
   /** Converts "1x05" / "2x12" to "S01E05" / "S02E12" */
   formatSXXEXX(seasonEpisode) {
     const m = String(seasonEpisode).match(/^(\d+)x(\d+)$/i);
@@ -762,6 +798,7 @@ class EnhancedPlayer {
         targetContainer.insertBefore(episodeDiv, seriesDiv.nextSibling);
       }
       if (titleElement) titleElement.style.display = "none";
+      this.forceControlBarReflow(targetContainer);
     };
 
     const applyOrUpdateMovie = (text) => {
@@ -776,6 +813,7 @@ class EnhancedPlayer {
         targetContainer.insertBefore(movieDiv, targetContainer.firstChild);
       }
       if (titleElement) titleElement.style.display = "none";
+      this.forceControlBarReflow(targetContainer);
     };
 
     let match = titleText.match(/^(.+?): (.+?) - (.+?) \((\d+x\d+)\)$/);
