@@ -1092,15 +1092,24 @@ class MetadataHoverPopupService {
           posterRect,
           this.popup,
         );
-        PopupUtils.showPopup(this.popup, position);
-
-        // Load metadata and update popup content AFTER positioning
-        this.loadMetadataForPopup(container, this.popup);
-
-        this.activeContainer = container;
-        this.pendingContainer = null;
-        this.showTimeout = null; // Clear the timeout ID
-        PopupUtils.log("debug", "Popup shown and content loaded for container");
+        const wasShowingAnother = this.activeContainer != null;
+        if (wasShowingAnother) {
+          // Reset popup so entrance animation runs when showing for the new poster
+          PopupUtils.hidePopup(this.popup);
+        }
+        const doShow = () => {
+          PopupUtils.showPopup(this.popup, position);
+          this.loadMetadataForPopup(container, this.popup);
+          this.activeContainer = container;
+          this.pendingContainer = null;
+          this.showTimeout = null;
+          PopupUtils.log("debug", "Popup shown and content loaded for container");
+        };
+        if (wasShowingAnother) {
+          requestAnimationFrame(() => requestAnimationFrame(doShow));
+        } else {
+          doShow();
+        }
       } else if (this.isInteractingWithPopup) {
         PopupUtils.log(
           "debug",
